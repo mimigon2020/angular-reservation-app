@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { products } from '../../products';
+import { ProductService } from '../shared/product.service';
 
 @Component({
   selector: 'app-product-listings',
@@ -10,10 +10,21 @@ export class ProductListComponent implements OnInit {
 
   products: any;
 
-  constructor() { }
+  constructor(private productService: ProductService) { }
 
   ngOnInit(): void {
-    this.products = products;
+    // サービスからObservableを取得
+    const productObservable = this.productService.getProducts();
+    
+    // Observableを観測
+    productObservable.subscribe(
+      (data) => {
+        this.products = data;
+      },
+      (error) => { 
+        console.log('次のエラーが発生しました：' + error);
+      }
+    );
   }
 
 }
